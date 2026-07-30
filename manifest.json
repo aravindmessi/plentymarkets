@@ -1,0 +1,28 @@
+{
+  "platform-version": "3.0",
+  "modules": {
+    "common": {
+      "requests": {
+        "login": {},
+        "validateCredentials": {},
+        "getWorkitem": {},
+        "getOrderNumberItems": {}
+      }
+    },
+    "support_ticket": {
+      "location": {
+        "ticket_sidebar": {
+          "url": "template.html",
+          "icon": "icon.svg"
+        }
+      }
+    }
+  },
+  "engines": {
+    "node": "24.11.0",
+    "fdk": "10.1.8"
+  },
+  "scripts": {
+    "fdk-unit-test": "vitest run --coverage"
+  }
+}

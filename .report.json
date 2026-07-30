@@ -1,0 +1,746 @@
+{
+  "lints": [
+    {
+      "severity": 1,
+      "value": "app\\app.js::1: 'mode' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::65: 'auth' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::66: 'authToken' declared and assigned in different scopes. Possible asynchronous race condition.",
+      "type": "custom-js-lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::86: 'ctx' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::90: 'status' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::92: 'authToken' declared and assigned in different scopes. Possible asynchronous race condition.",
+      "type": "custom-js-lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::94: 'retryCtx' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::107: 'onInit' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::127: 'target' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::128: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::146: 'order_p' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::148: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::154: 'item_p' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::156: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::176: 'store_div' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::182: 'multiple_stores' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::198: 'fetchData' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::218: 'order' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::219: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::244: 'orderNumber' declared and assigned in different scopes. Possible asynchronous race condition.",
+      "type": "custom-js-lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::259: 'resp' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::260: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::286: 'orderNumber' declared and assigned in different scopes. Possible asynchronous race condition.",
+      "type": "custom-js-lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::300: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::311: 'resp' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::314: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::358: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::386: 'order_l_div' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::392: 'create_o' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::400: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::412: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::427: 'item_card' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::438: 'stock_orders_id' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::467: 'sw_store' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::487: 'more_order_det' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::489: 'attr_element' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::491: 'order_prop' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::493: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::501: 'parentdiv' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::510: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::514: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::522: 'itemattr' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::532: Function 'bindItemAttrValue' has a complexity of 13. Maximum allowed is 7.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::534: 'data2' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::535: 'shipp' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::536: 'parentdiv' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::556: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::559: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::568: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::571: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::588: 'item_card' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::593: 'itemCardElement' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::594: 'items' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::595: 'removeItems' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::604: 'spinner' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::653: Function 'elementCreate' has a complexity of 10. Maximum allowed is 7.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::654: 'el_obj' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::673: 'table' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::673: 'parentdiv' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::684: 'table11' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::686: 'tr11' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::688: 'td12' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::689: 'table1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::690: 'tr1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::691: 'td1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::694: 'tr2' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::695: 'td2' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::698: 'tr44' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::699: 'td44' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::723: 'item_card_attr' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::750: Function has a complexity of 9. Maximum allowed is 7.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::772: 'payment' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::773: Expected '!==' and instead saw '!='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::774: 'paymentStatus' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::804: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::804: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::813: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::813: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::818: 'span1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::829: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::829: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::834: 'span1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::849: 'span1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::866: Function 'itemCardAttr' has a complexity of 9. Maximum allowed is 7.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::868: 'data4' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::869: 'data5' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::871: 'parentdiv' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::873: 'item_prop' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::875: 'table' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::882: 'val_attr' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::883: 'ship_meth' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::884: 'pay_attr' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::894: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::898: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::902: Expected '===' and instead saw '=='.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::924: 'stock_orders_id' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::925: 'table' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::932: 'tr' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::932: 'td' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::935: 'table11' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::937: 'tr11' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::939: 'td12' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::940: 'table1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::941: 'tr1_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::942: 'td1_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::944: 'b1_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::949: 'tr1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::950: 'td1' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::952: 'b9_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::957: 'tr2' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::958: 'td2' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::960: 'b2_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::965: 'tr44' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::966: 'td44' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::968: 'b3_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::976: 'tr45' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::977: 'td45' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::979: 'b4_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::986: 'tr49' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::987: 'td49' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::989: 'b5_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::997: 'tr45' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::998: 'td45' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1003: 'tr49' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1004: 'td49' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1010: 'tr46' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1011: 'td46' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1013: 'b6_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1020: 'tr47' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1021: 'td47' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1023: 'b7_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1030: 'tr48' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1031: 'td48' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1033: 'b8_' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1056: 'textElement' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\app.js::1057: 'getContact' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::5: 'self' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::6: 'li' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::10: 'active' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::18: 'em' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::22: 'left' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::23: 'leftNew' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    },
+    {
+      "severity": 1,
+      "value": "app\\js\\index.js::24: 'toRight' is never reassigned. Use 'const' instead.",
+      "type": "lint"
+    }
+  ],
+  "coverage": {},
+  "coverageSummary": {
+    "lines": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    },
+    "statements": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    },
+    "functions": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    },
+    "branches": {
+      "total": 0,
+      "covered": 0,
+      "skipped": 0,
+      "pct": "Unknown"
+    }
+  }
+}
