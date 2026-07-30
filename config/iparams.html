@@ -36,6 +36,10 @@
       margin: 10px 20px;
     }
 
+    #invalid-cred-i {
+      color: #d1021a;
+      min-height: 18px;
+    }
 
     /* model css */
     /* The Modal (background) */
@@ -170,13 +174,15 @@
     }
   </style>
 
-  <script type="text/javascript">
+   
+
+ <script type="text/javascript">
     var properties = { order_p: [], item_p: [] };
     var token;
     var client;
+    var inputValues = {}; // Active cache to reliably track input field changes
 
     var orderProperties = [
-     
       "paidAmount",
       "netTotal",
       "orderDate&Time",
@@ -212,161 +218,229 @@
       "shippingProfileID"
     ];
 
+    // Bulletproof helper to get values from <fw-input> components under any condition
+    function getFieldValue(elementId) {
+      // 1. Check our active event cache first
+      if (inputValues[elementId] !== undefined && inputValues[elementId] !== '') {
+        return String(inputValues[elementId]).trim();
+      }
 
-    //getConfig method
+      const el = document.getElementById(elementId);
+      if (!el) return '';
+      
+      // 2. Check direct property value
+      if (el.value) {
+        return String(el.value).trim();
+      }
+      
+      // 3. Fallback to shadowRoot inner input element
+      if (el.shadowRoot) {
+        const innerInput = el.shadowRoot.querySelector('input');
+        if (innerInput && innerInput.value) {
+          return innerInput.value.trim();
+        }
+      }
+      
+      // 4. Fallback to HTML attribute value
+      const attrVal = el.getAttribute('value');
+      return attrVal ? attrVal.trim() : '';
+    }
+
+    // getConfig method
     function getConfigs(configs) {
-      console.log(configs);
-      setTimeout(() => {
+      console.log("configs received:", configs);
+      
+      customElements.whenDefined('fw-input').then(() => {
         let SW_domain = document.getElementById('shop-name');
         let SW_client = document.getElementById('shop-client');
-        let client_secret = document.getElementById('shop-cilentid');
-       
-        if (configs.SWdomain) SW_domain.value = configs.SWdomain;
-        if (configs.client_id) SW_client.value = configs.client_id;
-        if (configs.client_secret) client_secret.value = configs.client_secret;
-        
-        SWdomain = SW_domain.value;
-        client_id = SW_client.value;
-        client_secret = client_secret.value;
-      }, 100)
+        let shop_secret = document.getElementById('shop-cilentid');
+
+        if (SW_domain && configs.SWdomain) {
+          SW_domain.value = configs.SWdomain;
+          inputValues['shop-name'] = configs.SWdomain;
+        }
+        if (SW_client && configs.client_id) {
+          SW_client.value = configs.client_id;
+          inputValues['shop-client'] = configs.client_id;
+        }
+        if (shop_secret && configs.client_secret) {
+          shop_secret.value = configs.client_secret;
+          inputValues['shop-cilentid'] = configs.client_secret;
+        }
+
+        if (configs.SWdomain && configs.client_id && configs.client_secret) {
+          token = 'saved';
+        }
+      });
+
       if (configs.properties) {
-        properties.order_p = configs.properties.order_p ? configs.properties.order_p : [];
-        properties.item_p = configs.properties.item_p ? configs.properties.item_p : [];
-
-      };
-
-
+        properties.order_p = Array.isArray(configs.properties.order_p) ? configs.properties.order_p : [];
+        properties.item_p = Array.isArray(configs.properties.item_p) ? configs.properties.item_p : [];
+      }
     }
-    //end of getconfig method
 
     function validate() {
       let isValid = true;
-
+      const errorBind = document.getElementById('invalid-cred-i');
       let validTokenButt = document.getElementById('click-access-token');
       let validTokenErrProp = document.getElementById('click-access-token-app-tab');
+      
+      let SWdomainVal = getFieldValue('shop-name');
+      let SWclientVal = getFieldValue('shop-client');
+      let shopSecretVal = getFieldValue('shop-cilentid');
+
       let SWdomain = document.getElementById('shop-name');
       let SW_client = document.getElementById('shop-client');
-      let client_secret = document.getElementById('shop-cilentid');
+      let shop_secret = document.getElementById('shop-cilentid');
 
-
-      if (SWdomain.value && SWdomain.value.trim() != '') {
-        isValid = true;
-        SWdomain.setAttribute("state", "normal");
+      if (SWdomainVal) {
+        if (SWdomain) SWdomain.setAttribute("state", "normal");
       } else {
         isValid = false;
-        SWdomain.setAttribute("state", "error");
-        console.log("invalid");
+        if (SWdomain) SWdomain.setAttribute("state", "error");
       }
 
-      if (SW_client.value && SW_client.value.trim() != '') {
-        isValid = true;
-        SW_client.setAttribute("state", "normal");
+      if (SWclientVal) {
+        if (SW_client) SW_client.setAttribute("state", "normal");
       } else {
         isValid = false;
-        SW_client.setAttribute("state", "error");
-        console.log("invalid");
+        if (SW_client) SW_client.setAttribute("state", "error");
       }
 
-      if (client_secret.value && client_secret.value.trim() != '') {
-        isValid = true;
-        client_secret.setAttribute("state", "normal");
+      if (shopSecretVal) {
+        if (shop_secret) shop_secret.setAttribute("state", "normal");
       } else {
         isValid = false;
-        client_secret.setAttribute("state", "error");
-        console.log("invalid");
+        if (shop_secret) shop_secret.setAttribute("state", "error");
       }
 
-      if(!token){
+      if (!isValid) {
+        errorBind.style.color = 'red';
+        errorBind.innerText = 'Please fill in the store URL, username, and password.';
+      }
+
+      if (!token) {
         isValid = false;
-        validTokenButt.style.color='red';
-        validTokenErrProp.style.color='red';
+        validTokenButt.style.color = 'red';
+        validTokenErrProp.style.color = 'red';
         validTokenButt.innerHTML = 'Please validate the App. Click on Validate Account button to validate the app.';
-        validTokenErrProp.innerHTML = 'Please validate the App. Click on Validate Account button in App tab to validate the app.'
+        validTokenErrProp.innerHTML = 'Please validate the App. Click on Validate Account button in App tab to validate the app.';
       }
 
       return isValid;
     }
 
-    //post config
+    // post config
     function postConfigs() {
-
-      var stores = [];
-
       let params = {
         __meta: {
           secure: ["client_secret"]
         },
         properties,
-        SWdomain: document.getElementById('shop-name').value,
-        client_id: document.getElementById('shop-client').value,
-        client_secret: document.getElementById('shop-cilentid').value
+        SWdomain: getFieldValue('shop-name'),
+        client_id: getFieldValue('shop-client'),
+        client_secret: getFieldValue('shop-cilentid')
       };
-
+      console.log("params", params);
       return params;
     }
 
     setTimeout(() => {
       validateInputField();
-    }, 1000);
+    }, 500);
 
     function validateInputField() {
-     
-      let SWdomain = document.getElementById('shop-name');
-      let SW_client = document.getElementById('shop-client');
-      let client_secret = document.getElementById('shop-cilentid');
-      let errorBind = document.getElementById('invalid-cred-i');
-
-      SWdomain.addEventListener("input", (data) => {
-        token = null;
-        errorBind.innerHTML = '';
-        if (SWdomain.value && SWdomain.value.trim() != '') {
-          SWdomain.setAttribute("state", "normal");
-        } else {
-          SWdomain.setAttribute("state", "error");
-        }
-      });
-
-      SW_client.addEventListener("input", (data) => {
-        token = null;
-        errorBind.innerHTML = '';
-        if (SW_client.value && SW_client.value.trim() != '') {
-          SW_client.setAttribute("state", "normal");
-        } else {
-          SW_client.setAttribute("state", "error");
-        }
-      });
-
-      client_secret.addEventListener("input", (data) => {
-        token = null;
-        errorBind.innerHTML = '';
-        if (client_secret.value && client_secret.value.trim() != '') {
-          client_secret.setAttribute("state", "normal");
-        } else {
-          client_secret.setAttribute("state", "error");
+      ['shop-name', 'shop-client', 'shop-cilentid'].forEach(id => {
+        let el = document.getElementById(id);
+        if (el) {
+          // Listen to custom Crayons events and native events to safely cache input values
+          ['fwInput', 'fwChange', 'input'].forEach(eventType => {
+            el.addEventListener(eventType, (e) => {
+              token = null;
+              let val = e.target.value !== undefined ? e.target.value : (e.detail && e.detail.value !== undefined ? e.detail.value : getFieldValue(id));
+              inputValues[id] = val;
+              
+              let errorBind = document.getElementById('invalid-cred-i');
+              if (errorBind) errorBind.innerHTML = '';
+              
+              if (val && String(val).trim() !== '') {
+                el.setAttribute("state", "normal");
+              } else {
+                el.setAttribute("state", "error");
+              }
+            });
+          });
         }
       });
     }
 
-    function validateStore() {
-      console.log("plentymarkets");
-      let store_input = document.getElementById('shop-name').value.trim();
-      let errorBind = document.getElementById('invalid-cred-i');
-      errorBind.innerHTML = '';
+    function stripProtocol(value) {
+      return value ? value.replace(/^https?:\/\//i, '').replace(/\/+$/, '') : '';
+    }
 
-      // --- FIX: Ensure host/domain includes https:// to prevent empty schema/host errors ---
-      if (store_input && !store_input.startsWith('http://') && !store_input.startsWith('https://')) {
-        store_input = 'https://' + store_input;
-        document.getElementById('shop-name').value = store_input;
+    function validateStore() {
+      console.log("plentymarkets validation started");
+      const domainField = document.getElementById('shop-name');
+      const userField = document.getElementById('shop-client');
+      const secretField = document.getElementById('shop-cilentid');
+      const errorBind = document.getElementById('invalid-cred-i');
+      const validTokenButt = document.getElementById('click-access-token');
+      const validTokenErrProp = document.getElementById('click-access-token-app-tab');
+      const spinnForTok = document.getElementById('spinner-token');
+
+      if (errorBind) errorBind.innerHTML = '';
+      if (validTokenButt) validTokenButt.innerHTML = '';
+      if (validTokenErrProp) validTokenErrProp.innerHTML = '';
+
+      let rawDomain = getFieldValue('shop-name');
+      let store_input = stripProtocol(rawDomain);
+      const cI = getFieldValue('shop-client');
+      const cS = getFieldValue('shop-cilentid');
+
+      console.log("rawDomain value:", rawDomain);
+      console.log("store_input:", store_input);
+
+      let missing = [];
+
+      if (!store_input) {
+        if (domainField) domainField.setAttribute('state', 'error');
+        missing.push('Store URL');
+      } else {
+        if (domainField) {
+          domainField.setAttribute('state', 'normal');
+        }
       }
 
-      let cI = document.getElementById('shop-client').value;
-      let cS = document.getElementById('shop-cilentid').value;
-      let validTokenButt = document.getElementById('click-access-token');
-      let validTokenErrProp = document.getElementById('click-access-token-app-tab');
-      let spinnForTok = document.getElementById('spinner-token');
-      spinnForTok.style.display = 'block';
-      validTokenButt.innerHTML = '';
-      validTokenErrProp.innerHTML = '';
+      if (!cI) {
+        if (userField) userField.setAttribute('state', 'error');
+        missing.push('Username');
+      } else {
+        if (userField) userField.setAttribute('state', 'normal');
+      }
+
+      if (!cS) {
+        if (secretField) secretField.setAttribute('state', 'error');
+        missing.push('Password');
+      } else {
+        if (secretField) secretField.setAttribute('state', 'normal');
+      }
+
+      console.log("missing fields:", missing);
+
+      if (missing.length > 0) {
+        token = null;
+        if (errorBind) {
+          errorBind.style.color = 'red';
+          errorBind.innerText = `Please enter: ${missing.join(', ')}.`;
+        }
+        if (validTokenButt) {
+          validTokenButt.style.color = 'red';
+          validTokenButt.innerHTML = `Missing required fields: ${missing.join(', ')}.`;
+        }
+        return;
+      }
+
+      if (spinnForTok) spinnForTok.style.display = 'block';
 
       const payload = JSON.stringify({
         username: cI,
@@ -380,45 +454,45 @@
         body: payload
       })
       .then(function (data) {
-        spinnForTok.style.display = 'none';
+        if (spinnForTok) spinnForTok.style.display = 'none';
         const response = JSON.parse(data.response);
         console.log(response);
 
         if (data.status === 200) {
           token = `${response.token_type} ${response.access_token}`;
+          if (errorBind) errorBind.innerHTML = '';
+          if (validTokenButt) {
+            validTokenButt.innerHTML = "App validated successfully. Click on Install/Save.";
+            validTokenButt.style.color = 'green';
+          }
+          if (validTokenErrProp) validTokenErrProp.innerHTML = '';
         }
 
-        validTokenButt.innerHTML = "App validated successfully. Click on Install/Save.";
-        validTokenButt.style.color = 'green';
         return response;
       })
       .catch(function (err) {
         console.log("not validation", err);
-        spinnForTok.style.display = 'none';
-        
-        // --- ADDED: Bind schema / runtime errors to top error element for clarity ---
-        errorBind.style.color = 'red';
-        if (err.errors && err.errors.length > 0) {
-          errorBind.innerText = `Validation Error: ${err.errors[0].instancePath} ${err.errors[0].message}`;
-        } else {
-          errorBind.innerText = 'Runtime validation failed. Please check your inputs.';
-        }
+        if (spinnForTok) spinnForTok.style.display = 'none';
+        token = null;
 
-        let msg = "Please Enter Valid Data";
+        let msg = "Invalid credentials. Please check your store URL, username, and password.";
         try {
           const _err = JSON.parse(err.response);
-          if (_err && _err.errors) {
-            msg = _err.errors[0] ? _err.errors[0].title : "OOPS issue or Invalid Credentials";
-          } else {
-            msg = "Oops issues or Invalid Credentials";
+          if (_err && _err.errors && _err.errors[0]) {
+            msg = _err.errors[0].title || msg;
           }
         } catch (e) {
-          msg = "Please Enter Valid Data";
+          // Fallback
         }
 
-        validTokenButt.innerHTML = msg;
-        validTokenButt.style.color = 'red';
-        throw err;
+        if (errorBind) {
+          errorBind.style.color = 'red';
+          errorBind.innerText = msg;
+        }
+        if (validTokenButt) {
+          validTokenButt.innerHTML = msg;
+          validTokenButt.style.color = 'red';
+        }
       });
     }
 
@@ -432,7 +506,7 @@
               key: e,
               checked: properties.order_p.map(f => f.key).includes(e)
             }
-          })
+          });
           refreshOrderPropertiesTable();
 
           itemProperties = itemProperties.map(e => {
@@ -440,14 +514,14 @@
               key: e,
               checked: properties.item_p.map(f => f.key).includes(e)
             }
-          })
-
+          });
           refreshItemPropertiesTable();
         }, 400);
       });
 
     function refreshOrderPropertiesTable() {
       let table = document.getElementById("prop-table");
+      if (!table) return;
       while (table.rows.length > 1) {
         table.deleteRow(1);
       }
@@ -458,15 +532,17 @@
 
         cell1.innerHTML = orderProperties[i].key;
         var cancel_t = document.createElement('fw-checkbox');
-        cancel_t.setAttribute('checked', orderProperties[i].checked);
-        cancel_t.setAttribute('onclick', 'propertiesFun(this,"' + orderProperties[i].key + '","order")');
+        if (orderProperties[i].checked) {
+          cancel_t.setAttribute('checked', 'true');
+        }
+        cancel_t.setAttribute('onclick', 'propertiesFun(this,\'' + orderProperties[i].key + '\',\'order\')');
         cell2.appendChild(cancel_t);
       }
     }
 
-
     function refreshItemPropertiesTable() {
       let table = document.getElementById("line-prop-table");
+      if (!table) return;
       while (table.rows.length > 1) {
         table.deleteRow(1);
       }
@@ -477,41 +553,42 @@
 
         cell1.innerHTML = itemProperties[i].key;
         var cancel_t = document.createElement('fw-checkbox');
-        cancel_t.setAttribute('checked', itemProperties[i].checked);
-        cancel_t.setAttribute('onclick', 'propertiesFun(this,"' + itemProperties[i].key + '","item")');
+        if (itemProperties[i].checked) {
+          cancel_t.setAttribute('checked', 'true');
+        }
+        cancel_t.setAttribute('onclick', 'propertiesFun(this,\'' + itemProperties[i].key + '\',\'item\')');
         cell2.appendChild(cancel_t);
       }
     }
 
     function propertiesFun(event_, key, type) {
       let obj = { key: key, name: placeHolder(key) };
-      if (type == "order") {
-        let o_ind = properties.order_p.findIndex(e => e.key == key);
-        if (o_ind == -1) {
+      if (type === "order") {
+        let o_ind = properties.order_p.findIndex(e => e.key === key);
+        if (o_ind === -1) {
           if (properties.order_p.length < 4) {
             properties.order_p.push(obj);
           } else {
             setTimeout(() => {
               event_.checked = false;
-            }, 100)
+              event_.removeAttribute('checked');
+            }, 100);
           }
-        }
-        else {
+        } else {
           properties.order_p.splice(o_ind, 1);
         }
-      }
-      else {
-        let i_ind = properties.item_p.findIndex(e => e.key == key);
-        if (i_ind == -1) {
+      } else {
+        let i_ind = properties.item_p.findIndex(e => e.key === key);
+        if (i_ind === -1) {
           if (properties.item_p.length < 4) {
             properties.item_p.push(obj);
           } else {
             setTimeout(() => {
               event_.checked = false;
-            }, 100)
+              event_.removeAttribute('checked');
+            }, 100);
           }
-        }
-        else {
+        } else {
           properties.item_p.splice(i_ind, 1);
         }
       }
@@ -520,17 +597,15 @@
     function placeHolder(key) {
       let str = '', ind;
       for (var i = 0; i < key.length; i++) {
-        if (i != 0 && isUpperCase(key[i])) {
+        if (i !== 0 && isUpperCase(key[i])) {
           ind = i - 1;
           if (isUpperCase(key[ind])) {
             str = str + key[i];
-          }
-          else {
+          } else {
             str = str + ' ';
             str = str + key[i];
           }
-
-        } else if (i == 0) {
+        } else if (i === 0) {
           str = str + key[i].toUpperCase();
         } else {
           str = str + key[i];
@@ -543,6 +618,7 @@
       return (char >= 'A') && (char <= 'Z');
     }
   </script>
+
 </head>
 
 <body>
@@ -554,7 +630,7 @@
           <div class="web-store">
             <!-- Existing element used to display schema or credential errors -->
             <p id="invalid-cred-i" style="font-weight: bold;"></p>
-            <fw-input id="shop-name" label="Plentymarkets Store URL" name="domain_name" state="normal"
+            <fw-input id="shop-name" label="Plentymarkets Store URL" name="domain_name" state="normal" 
               state-text="Enter Plentymarkets Store URL" placeholder="Ex: yourdomain.plentymarkets.com" required clear-input>
             </fw-input>
             <fw-input id="shop-client" label="Plentymarkets Username" name="swdomain_name" state="normal"
