@@ -20,19 +20,30 @@
       "headers": {
         "Content-Type": "application/json"
       }
-    }
+    },
+    "options": {}
   },
   "getWorkitem": {
     "schema": {
       "method": "GET",
       "protocol": "https",
       "host": "<%= iparam.SWdomain %>",
-      "path": "/rest/orders?with[]=addresses&with[]=payments&with[]=shippingPackages&with[]=relations&with[]=warehouseSender&with[]=orderItems.variation&with[]=documents&itemsPerPage=10",
+      "path": "/rest/orders",
       "headers": {
         "Authorization": "<%= context.token %>",
         "Content-Type": "application/json"
       },
       "query": {
+        "with[]": [
+          "addresses",
+          "payments",
+          "shippingPackages",
+          "relations",
+          "warehouseSender",
+          "orderItems.variation",
+          "documents"
+        ],
+        "itemsPerPage": "10",
         "contactData": "<%= context.senderEmail %>"
       }
     },
@@ -43,12 +54,24 @@
       "method": "GET",
       "protocol": "https",
       "host": "<%= iparam.SWdomain %>",
-      "path": "/rest/orders?with[]=addresses&with[]=shippingInformation&with[]=payments&with[]=shippingPackages&with[]=relations&with[]=warehouseSender&with[]=orderItems.variation&with[]=documents&with[]=location&with[]=originOrderReferences",
+      "path": "/rest/orders",
       "headers": {
         "Authorization": "<%= context.token %>",
         "Content-Type": "application/json"
       },
       "query": {
+        "with[]": [
+          "addresses",
+          "shippingInformation",
+          "payments",
+          "shippingPackages",
+          "relations",
+          "warehouseSender",
+          "orderItems.variation",
+          "documents",
+          "location",
+          "originOrderReferences"
+        ],
         "orderIds": "<%= context.orderID %>"
       }
     },
