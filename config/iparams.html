@@ -3,7 +3,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="https://static.freshdev.io/fdk/2.0/assets/freshdesk.css">
-  
+
   <!-- Crayons v4 Stylesheet and Scripts -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.css">
   <script type="module" src="https://cdn.jsdelivr.net/npm/@freshworks/crayons@v4/dist/crayons/crayons.esm.js"></script>
@@ -13,29 +13,13 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-  
+
   <style>
-    .app-config {
-      margin: 20px;
-    }
-    #invalid-cred-i {
-      color: #d1021a;
-      min-height: 18px;
-      font-weight: bold;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .section-box {
-      background: #fff;
-      padding: 20px;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    .table-container {
-      margin-top: 15px;
-    }
+    .app-config { margin: 20px; }
+    #invalid-cred-i { color: #d1021a; min-height: 18px; font-weight: bold; }
+    .form-group { margin-bottom: 15px; }
+    .section-box { background: #fff; padding: 20px; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 20px; }
+    .table-container { margin-top: 15px; }
   </style>
 
   <script type="text/javascript">
@@ -49,7 +33,7 @@
       "billingAddress", "ownerID", "plentyID", "name",
       "onStockAvailability", "outOfStockAvailability", "storageLocationType", "storageLocationZone"
     ];
-    
+
     var itemProperties = [
       "discount", "exchangeRate", "priceGross", "priceNet",
       "priceOriginalNet", "priceOriginalGross", "purchasePrice", "surcharge",
@@ -93,7 +77,7 @@
       let isValid = true;
       const errorBind = document.getElementById('invalid-cred-i');
       let validTokenButt = document.getElementById('click-access-token');
-      
+
       let SWdomainVal = getFieldValue('shop-name');
       let SWclientVal = getFieldValue('shop-client');
       let shopSecretVal = getFieldValue('shop-cilentid');
@@ -141,20 +125,39 @@
       return isValid;
     }
 
-    function postConfigs() {
+    // function postConfigs() {
+    //   let params = {
+    //     __meta: {
+    //       secure: ["client_secret"]
+    //     },
+    //     properties,
+    //     SWdomain: getFieldValue('shop-name'),
+    //     client_id: getFieldValue('shop-client'),
+    //     client_secret: getFieldValue('shop-cilentid')
+    //   };
+    //   console.log("params", params);
+    //   return params;
+    // }
+
+  function postConfigs() {
+      console.log("postconfig called");
+      
+      let rawDomain = getFieldValue('shop-name');
+      let cleanDomain = stripProtocol(rawDomain);
+
       let params = {
         __meta: {
           secure: ["client_secret"]
         },
-        properties,
-        SWdomain: getFieldValue('shop-name'),
-        client_id: getFieldValue('shop-client'),
-        client_secret: getFieldValue('shop-cilentid')
+        properties: properties || { order_p: [], item_p: [] },
+        SWdomain: cleanDomain || "",
+        client_id: getFieldValue('shop-client') || "",
+        client_secret: getFieldValue('shop-cilentid') || ""
       };
-      console.log("params", params);
+      
+      console.log("params being saved:", params);
       return params;
     }
-
     document.addEventListener('DOMContentLoaded', () => {
       ['shop-name', 'shop-client', 'shop-cilentid'].forEach(id => {
         let el = document.getElementById(id);
@@ -170,6 +173,7 @@
     });
 
     function stripProtocol(value) {
+      console.log("1. stripProtocol called with value:", value);
       return value ? value.replace(/^https?:\/\//i, '').replace(/\/+$/, '') : '';
     }
 
@@ -187,6 +191,9 @@
 
       let rawDomain = getFieldValue('shop-name');
       let store_input = stripProtocol(rawDomain);
+      if (domainField) {
+      domainField.value = store_input;
+    }
       const cI = getFieldValue('shop-client');
       const cS = getFieldValue('shop-cilentid');
 
@@ -226,12 +233,25 @@
         return;
       }
 
+      if (!client) {
+        console.error("client is not initialized yet");
+        if (errorBind) {
+          errorBind.style.color = 'red';
+          errorBind.innerText = 'App is still loading, please wait a second and try again.';
+        }
+        return;
+      }
+
       if (spinnForTok) spinnForTok.style.display = 'block';
 
       const payload = JSON.stringify({
         username: cI,
         password: cS
       });
+
+      // DEBUG: log exactly what we're about to send to invokeTemplate
+      console.log("invokeTemplate('validateCredentials') context:", { domain: store_input });
+      console.log("invokeTemplate('validateCredentials') body:", payload);
 
       return client.request.invokeTemplate('validateCredentials', {
         context: {
@@ -242,7 +262,7 @@
       .then(function (data) {
         if (spinnForTok) spinnForTok.style.display = 'none';
         const response = JSON.parse(data.response);
-        console.log(response);
+        console.log("validateCredentials success:", response);
 
         if (data.status === 200) {
           token = `${response.token_type} ${response.access_token}`;
@@ -255,17 +275,37 @@
         return response;
       })
       .catch(function (err) {
-        console.log("not validation", err);
+        // Log the FULL raw error object so it's inspectable in devtools console
+        console.error("validateCredentials failed - raw error object:", err);
+
         if (spinnForTok) spinnForTok.style.display = 'none';
         token = null;
 
         let msg = "Invalid credentials. Please check your store URL, username, and password.";
-        try {
-          const _err = JSON.parse(err.response);
-          if (_err && _err.errors && _err.errors[0]) {
-            msg = _err.errors[0].title || msg;
+
+        if (err) {
+          if (typeof err.response === 'string') {
+            try {
+              const _err = JSON.parse(err.response);
+              if (_err && _err.errors && _err.errors[0]) {
+                msg = _err.errors[0].title || msg;
+              } else if (_err && _err.error) {
+                msg = _err.error;
+              } else {
+                // response existed but wasn't the Plentymarkets error shape -
+                // show it as-is, it's more useful than the generic message
+                msg = err.response;
+              }
+            } catch (e) {
+              // err.response wasn't JSON at all (e.g. a platform-level message
+              // like "error while substituting templates.") - surface it directly
+              // instead of silently falling back to the generic message.
+              msg = err.response;
+            }
+          } else if (err.message) {
+            msg = err.message;
           }
-        } catch (e) {}
+        }
 
         if (errorBind) {
           errorBind.style.color = 'red';
@@ -410,11 +450,10 @@
   <div class="app-config">
     <div class="row">
       <div class="col-md-8">
-        <!-- App Settings Section -->
         <div class="section-box">
           <h3>App Credentials</h3>
           <p id="invalid-cred-i"></p>
-          
+
           <div class="form-group">
             <fw-input label="Plentymarkets Store URL" id="shop-name" placeholder="Ex: yourdomain.plentymarkets.com" required></fw-input>
           </div>
@@ -434,12 +473,10 @@
           </div>
         </div>
 
-        <!-- Order Attributes Configuration Section -->
         <div class="section-box">
           <h3>Order Attributes Configuration</h3>
           <p style="color:tomato;"><strong>Note: </strong>Maximum of four attributes can be selected in each item table.</p>
-          
-          <!-- Crayons Tabs Wrapper (Fixed missing closing tag) -->
+
           <fw-tabs>
             <fw-tab tab="order-props" label="Order Properties">
               <div class="table-container">

@@ -66,6 +66,7 @@ function login() {
     username: "<%= iparam.client_id %>",
     password: "<%= iparam.client_secret %>",
   });
+console.log("payload",payload);
 
   return client.request
     .invokeTemplate("login", {
