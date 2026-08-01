@@ -59,19 +59,39 @@ const mapProp = {
 
 let authToken = null;
 
-function login() {
-  // Pass the EJS template tags as strings.
-  // Freshworks will securely swap them out with the real iparam values in the background.
-  return client.request
-    .invokeTemplate("login", {
-      body: JSON.stringify({
-        username: iparam.client_id, // (or client_id / client_secret depend on PlentyMarkets API)
-        password: iparam.client_secret,
-      }),
-    })
+// function login() {
+//   return client.request
+//     .invokeTemplate("login", {
+//       body: JSON.stringify({
+//         username: iparam.client_id, 
+//         password: iparam.client_secret,
+//       }),
+//     })
 
+//     .then(function (data) {
+//       // Parse the response exactly as you did before
+//       let auth = JSON.parse(data.response);
+//       authToken = auth.token_type + " " + auth.access_token;
+//       return authToken;
+//     })
+//     .catch(function (error) {
+//       console.error("Error during login:", error);
+//       throw error;
+//     });
+// }
+
+function login() {
+  return client.iparams
+    .get()
+    .then(function (iparams) {
+      return client.request.invokeTemplate("login", {
+        body: JSON.stringify({
+          username: iparams.client_id,
+          password: iparams.client_secret,
+        }),
+      });
+    })
     .then(function (data) {
-      // Parse the response exactly as you did before
       let auth = JSON.parse(data.response);
       authToken = auth.token_type + " " + auth.access_token;
       return authToken;
@@ -81,6 +101,7 @@ function login() {
       throw error;
     });
 }
+
 
 function ensureAuthToken() {
   if (authToken) {
@@ -127,7 +148,7 @@ document.onreadystatechange = function () {
 
       loadAppConfig();
 
-      client.events.on("app.activated", onAppActivate);
+      // client.events.on("app.activated", onAppActivate);
     }
   }
 };
@@ -1016,6 +1037,10 @@ function itemCardAttr(obj) {
 }
 
 function displayshippingAddress(resp) {
+console.log("Full order response:", resp.entries[0]);
+console.log("addresses:", resp.entries[0].addresses);
+console.log("addressRelations:", resp.entries[0].addressRelations);
+
   client.instance.resize({ height: "400px" });
 
   let stock_orders_id = document.getElementById("stock_orders_id");
@@ -1153,15 +1178,16 @@ function displayshippingAddress(resp) {
   stock_orders_id.appendChild(table);
 }
 
-function onAppActivate() {
-  let textElement = document.getElementById("apptext");
-  let getContact = client.data.get("contact");
-  getContact.then(showContact).catch(handleErr);
+// function onAppActivate() {
+//   let textElement = document.getElementById("apptext");
+//   let getContact = client.data.get("contact");
+//   getContact.then(showContact).catch(handleErr);
 
-  function showContact(payload) {
-    textElement.innerHTML = `Ticket created by ${payload.contact.name}`;
-  }
-}
+//   function showContact(payload) {
+//     textElement.innerHTML = `Ticket created by ${payload.contact.name}`;
+//   }
+// }
+
 
 function handleErr(err) {
   console.error(`Error occured. Details:`, err);
