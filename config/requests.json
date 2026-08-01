@@ -1,19 +1,15 @@
 {
   "login": {
-    "schema": {
-      "protocol": "https",
-      "method": "POST",
-      "host": "your-api-domain.com",
-      "path": "/oauth/token",
-      "headers": {
-        "Content-Type": "application/json"
-      },
-      "body": {
-        "username": "<%= context.client_id %>",
-        "password": "<%= context.client_secret %>"
-      }
+  "schema": {
+    "protocol": "https",
+    "method": "POST",
+    "host": "<%= iparam.SWdomain %>",
+    "path": "/rest/login",
+    "headers": {
+      "Content-Type": "application/json"
     }
-  },
+  }
+},
   "validateCredentials": {
     "schema": {
       "method": "POST",

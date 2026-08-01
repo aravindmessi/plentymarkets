@@ -3,7 +3,7 @@ let mode = "stores",
   orderNumber;
 window.customExists = true;
 //Order detailed attribute
-const orderAttr = [
+let orderAttr = [
   "paidAmount",
   "netTotal",
   "orderDate&Time",
@@ -62,16 +62,14 @@ let authToken = null;
 function login() {
   // Pass the EJS template tags as strings.
   // Freshworks will securely swap them out with the real iparam values in the background.
-  const payload = JSON.stringify({
-    username: "<%= iparam.client_id %>",
-    password: "<%= iparam.client_secret %>",
-  });
-console.log("payload",payload);
-
   return client.request
     .invokeTemplate("login", {
-      body: payload,
+      body: JSON.stringify({
+        username: iparam.client_id, // (or client_id / client_secret depend on PlentyMarkets API)
+        password: iparam.client_secret,
+      }),
     })
+
     .then(function (data) {
       // Parse the response exactly as you did before
       let auth = JSON.parse(data.response);
@@ -142,15 +140,15 @@ function loadAppConfig() {
     .get()
     .then((data) => {
       let target = data;
-      
+
       if (target != "") {
-        console.log("loadtarget",target);
+        console.log("loadtarget", target);
         oauthConfig();
         loadStores(target);
       }
     })
     .catch((err) => {
-      console.log("loaderr",err);
+      console.log("loaderr", err);
 
       client.interface.trigger("showNotify", {
         type: "danger",
@@ -172,9 +170,8 @@ function loadAppConfig() {
         : [];
 
       if (order_p.length != 0) {
-        orderAttr.concat(order_p.map((e) => e.key));
+        orderAttr = orderAttr.concat(order_p.map((e) => e.key));
       }
-
       window.list_item_prop = Array.isArray(prop.properties.item_p)
         ? prop.properties.item_p
         : [];
@@ -186,7 +183,7 @@ function loadAppConfig() {
         : [];
 
       if (item_p.length != 0) {
-        orderAttr.concat(item_p.map((e) => "OrderLine." + e.key));
+        orderAttr = orderAttr.concat(item_p.map((e) => "OrderLine." + e.key));
       }
     })
     .catch((err) => {
@@ -219,7 +216,7 @@ function loadStores(target) {
 
 // function oauthConfig() {
 //   console.log("oauthconfig");
-  
+
 //   login()
 //     .then(function () {
 //       return client.data.get("ticket");
@@ -232,7 +229,7 @@ function loadStores(target) {
 //     })
 //     .catch(function (err) {
 //       console.log("oauthconfigerror",err);
-      
+
 //       client.interface.trigger("showNotify", {
 //         type: "danger",
 //         title: "",
@@ -244,7 +241,7 @@ function loadStores(target) {
 // }
 function oauthConfig() {
   console.log("oauthconfig");
-  
+
   return login()
     .then(function () {
       return client.data.get("ticket");
@@ -258,7 +255,7 @@ function oauthConfig() {
     })
     .catch(function (err) {
       console.log("oauthconfigerror", err);
-      
+
       client.interface.trigger("showNotify", {
         type: "danger",
         title: "",
