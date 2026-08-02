@@ -63,7 +63,7 @@ let authToken = null;
 //   return client.request
 //     .invokeTemplate("login", {
 //       body: JSON.stringify({
-//         username: iparam.client_id, 
+//         username: iparam.client_id,
 //         password: iparam.client_secret,
 //       }),
 //     })
@@ -101,7 +101,6 @@ function login() {
       throw error;
     });
 }
-
 
 function ensureAuthToken() {
   if (authToken) {
@@ -1037,10 +1036,13 @@ function itemCardAttr(obj) {
 }
 
 function displayshippingAddress(resp) {
-console.log("Full order response:", resp.entries[0]);
-console.log("addresses:", resp.entries[0].addresses);
-console.log("addressRelations:", resp.entries[0].addressRelations);
-
+  console.log("Full order response:", resp.entries[0]);
+  console.log("addresses:", resp.entries[0].addresses);
+  console.log("addressRelations:", resp.entries[0].addressRelations);
+  const shipRelations = resp.entries[0].addressRelations || [];
+  const shipRelation =
+    shipRelations.find((r) => r.typeId === 2) || shipRelations[0] || {};
+  const shipAddr = shipRelation.address || shipRelation;
   client.instance.resize({ height: "400px" });
 
   let stock_orders_id = document.getElementById("stock_orders_id");
@@ -1067,7 +1069,7 @@ console.log("addressRelations:", resp.entries[0].addressRelations);
   td1_.setAttribute("style", "padding: 20px 0px 5px;");
   let b1_ = document.createElement("b");
   b1_.setAttribute("class", "b");
-  b1_.innerText = resp.entries[0].addresses[1].name1;
+  b1_.innerText = shipAddr.name11;
   td1_.innerHTML = "Company: ";
   td1_.appendChild(b1_);
   tr1_.appendChild(td1_);
@@ -1077,7 +1079,7 @@ console.log("addressRelations:", resp.entries[0].addressRelations);
   td1.setAttribute("style", "padding: 20px 0px 5px;");
   let b9_ = document.createElement("b");
   b9_.setAttribute("class", "b");
-  b9_.innerText = resp.entries[0].addresses[1].name2;
+  b9_.innerText = shipAddr.name12;
   td1.innerHTML = "First Name: ";
   td1.appendChild(b9_);
   tr1.appendChild(td1);
@@ -1087,7 +1089,7 @@ console.log("addressRelations:", resp.entries[0].addressRelations);
   td2.setAttribute("style", "padding: 20px 0px 5px;");
   let b2_ = document.createElement("b");
   b2_.setAttribute("class", "b");
-  b2_.innerText = resp.entries[0].addresses[1].name3;
+  b2_.innerText = shipAddr.name13;
   td2.innerHTML = "Last Name: ";
   td2.appendChild(b2_);
   tr2.appendChild(td2);
@@ -1187,7 +1189,6 @@ console.log("addressRelations:", resp.entries[0].addressRelations);
 //     textElement.innerHTML = `Ticket created by ${payload.contact.name}`;
 //   }
 // }
-
 
 function handleErr(err) {
   console.error(`Error occured. Details:`, err);
