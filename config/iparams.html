@@ -459,17 +459,55 @@
         }
       }
 
-      function propertiesFun(event_, key, type, isChecked) {
+      // function propertiesFun(event_, key, type, isChecked) {
+      //   let obj = { key: key, name: placeHolder(key) };
+      //   if (type === "order") {
+      //     let o_ind = properties.order_p.findIndex((e) => e.key === key);
+      //     if (isChecked && o_ind === -1) {
+      //       if (properties.order_p.length < 4) {
+      //         properties.order_p.push(obj);
+      //       } else {
+      //         setTimeout(() => {
+      //           event_.removeAttribute("checked");
+      //         }, 100);
+      //       }
+      //     } else if (!isChecked && o_ind !== -1) {
+      //       properties.order_p.splice(o_ind, 1);
+      //     }
+      //   } else {
+      //     let i_ind = properties.item_p.findIndex((e) => e.key === key);
+      //     if (isChecked && i_ind === -1) {
+      //       if (properties.item_p.length < 4) {
+      //         properties.item_p.push(obj);
+      //       } else {
+      //         setTimeout(() => {
+      //           event_.removeAttribute("checked");
+      //         }, 100);
+      //       }
+      //     } else if (!isChecked && i_ind !== -1) {
+      //       properties.item_p.splice(i_ind, 1);
+      //     }
+      //   }
+      // }
+
+function propertiesFun(event_, key, type, isChecked) {
+        let errorMsgEl = document.getElementById("prop-error-msg");
+        if (errorMsgEl) errorMsgEl.innerText = ""; // Clear previous error
+
         let obj = { key: key, name: placeHolder(key) };
+        
         if (type === "order") {
           let o_ind = properties.order_p.findIndex((e) => e.key === key);
           if (isChecked && o_ind === -1) {
             if (properties.order_p.length < 4) {
               properties.order_p.push(obj);
             } else {
-              setTimeout(() => {
-                event_.removeAttribute("checked");
-              }, 100);
+              // Prevent checking the 5th checkbox
+              event_.checked = false;
+              event_.removeAttribute("checked");
+              if (errorMsgEl) {
+                errorMsgEl.innerText = "Maximum of 4 Order Properties can be selected.";
+              }
             }
           } else if (!isChecked && o_ind !== -1) {
             properties.order_p.splice(o_ind, 1);
@@ -480,9 +518,12 @@
             if (properties.item_p.length < 4) {
               properties.item_p.push(obj);
             } else {
-              setTimeout(() => {
-                event_.removeAttribute("checked");
-              }, 100);
+              // Prevent checking the 5th checkbox
+              event_.checked = false;
+              event_.removeAttribute("checked");
+              if (errorMsgEl) {
+                errorMsgEl.innerText = "Maximum of 4 Item Properties can be selected.";
+              }
             }
           } else if (!isChecked && i_ind !== -1) {
             properties.item_p.splice(i_ind, 1);
