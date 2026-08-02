@@ -1,15 +1,15 @@
 {
   "login": {
-  "schema": {
-    "protocol": "https",
-    "method": "POST",
-    "host": "<%= iparam.SWdomain %>",
-    "path": "/rest/login",
-    "headers": {
-      "Content-Type": "application/json"
+    "schema": {
+      "protocol": "https",
+      "method": "POST",
+      "host": "<%= iparam.SWdomain %>",
+      "path": "/rest/login",
+      "headers": {
+        "Content-Type": "application/json"
+      }
     }
-  }
-},
+  },
   "validateCredentials": {
     "schema": {
       "method": "POST",
@@ -75,5 +75,18 @@
       }
     },
     "options": {}
-  }
+  },
+  "getContactAddress": {
+  "schema": {
+    "method": "GET",
+    "protocol": "https",
+    "host": "<%= iparam.SWdomain %>",
+    "path": "/rest/accounts/contacts/<%= context.contactID %>/addresses/<%= context.addressID %>",
+    "headers": {
+      "Authorization": "<%= context.token %>",
+      "Content-Type": "application/json"
+    }
+  },
+  "options": {}
+}
 }

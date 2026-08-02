@@ -6,7 +6,8 @@
         "login": {},
         "validateCredentials": {},
         "getWorkitem": {},
-        "getOrderNumberItems": {}
+        "getOrderNumberItems": {},
+        "getContactAddress":{}
       }
     },
     "support_ticket": {
