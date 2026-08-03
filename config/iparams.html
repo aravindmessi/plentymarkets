@@ -57,6 +57,7 @@
       var properties = { order_p: [], item_p: [] };
       var token;
       var client;
+      var configsHydrated = false;
 
       var orderProperties = [
         "paidAmount",
@@ -95,6 +96,59 @@
         "shippingProfileID",
       ];
 
+      // --- ADDED: these two functions were missing, causing
+      // "updateCheckboxLimits is not defined" and the item-properties
+      // table never rendering (the exception aborted the init callback
+      // before refreshItemPropertiesTable() could run). ---
+      function collectSelectedProperties(tableId) {
+        let table = document.getElementById(tableId);
+        if (!table) return [];
+        let boxes = table.querySelectorAll("fw-checkbox[data-key]");
+        let selected = [];
+        boxes.forEach((box) => {
+          if (box.checked) {
+            let key = box.getAttribute("data-key");
+            selected.push({ key: key, name: placeHolder(key) });
+          }
+        });
+        return selected;
+      }
+
+      // function updateCheckboxLimits(tableId, type) {
+      //   let table = document.getElementById(tableId);
+      //   if (!table) return;
+      //   let list = type === "order" ? properties.order_p : properties.item_p;
+      //   let limitReached = list.length >= 4;
+      //   let boxes = table.querySelectorAll("fw-checkbox[data-key]");
+      //   boxes.forEach((box) => {
+      //     let isChecked = box.checked;
+      //     if (limitReached && !isChecked) {
+      //       box.setAttribute("disabled", "true");
+      //     } else {
+      //       box.removeAttribute("disabled");
+      //     }
+      //   });
+      // }
+      // --- END ADDED ---
+
+      function updateCheckboxLimits(tableId) {
+        let table = document.getElementById(tableId);
+        if (!table) return;
+        let boxes = table.querySelectorAll("fw-checkbox[data-key]");
+        let checkedCount = 0;
+        boxes.forEach((box) => {
+          if (box.checked) checkedCount++;
+        });
+        let limitReached = checkedCount >= 4;
+        boxes.forEach((box) => {
+          if (limitReached && !box.checked) {
+            box.setAttribute("disabled", "true");
+          } else {
+            box.removeAttribute("disabled");
+          }
+        });
+      }
+
       function getFieldValue(elementId) {
         const el = document.getElementById(elementId);
         return el ? el.value.trim() : "";
@@ -121,13 +175,14 @@
           if (el) el.value = configs.client_secret;
         }
 
-        if (configs.properties) {
+        if (configs.properties && !configsHydrated) {
           properties.order_p = Array.isArray(configs.properties.order_p)
             ? configs.properties.order_p
             : [];
           properties.item_p = Array.isArray(configs.properties.item_p)
             ? configs.properties.item_p
             : [];
+          configsHydrated = true;
         }
       }
 
@@ -185,31 +240,17 @@
         return isValid;
       }
 
-      // function postConfigs() {
-      //   let params = {
-      //     __meta: {
-      //       secure: ["client_secret"]
-      //     },
-      //     properties,
-      //     SWdomain: getFieldValue('shop-name'),
-      //     client_id: getFieldValue('shop-client'),
-      //     client_secret: getFieldValue('shop-secret')
-      //   };
-      //   console.log("params", params);
-      //   return params;
-      // }
-
       function postConfigs() {
         console.log("postconfig called");
 
         let rawDomain = getFieldValue("shop-name");
         let cleanDomain = stripProtocol(rawDomain);
 
+        let order_p = collectSelectedProperties("prop-table");
+        let item_p = collectSelectedProperties("line-prop-table");
+
         let params = {
-          //  __meta: {
-          //   secure: ["client_secret"]
-          //  },
-          properties: properties || { order_p: [], item_p: [] },
+          properties: { order_p: order_p, item_p: item_p },
           SWdomain: cleanDomain || "",
           client_id: getFieldValue("shop-client") || "",
           client_secret: getFieldValue("shop-secret") || "",
@@ -218,6 +259,7 @@
         console.log("params being saved:", params);
         return params;
       }
+
       document.addEventListener("DOMContentLoaded", () => {
         ["shop-name", "shop-client", "shop-secret"].forEach((id) => {
           let el = document.getElementById(id);
@@ -312,7 +354,6 @@
           password: cS,
         });
 
-        // DEBUG: log exactly what we're about to send to invokeTemplate
         console.log("invokeTemplate('validateCredentials') context:", {
           domain: store_input,
         });
@@ -342,7 +383,6 @@
             return response;
           })
           .catch(function (err) {
-            // Log the FULL raw error object so it's inspectable in devtools console
             console.error(
               "validateCredentials failed - raw error object:",
               err,
@@ -363,14 +403,9 @@
                   } else if (_err && _err.error) {
                     msg = _err.error;
                   } else {
-                    // response existed but wasn't the Plentymarkets error shape -
-                    // show it as-is, it's more useful than the generic message
                     msg = err.response;
                   }
                 } catch (e) {
-                  // err.response wasn't JSON at all (e.g. a platform-level message
-                  // like "error while substituting templates.") - surface it directly
-                  // instead of silently falling back to the generic message.
                   msg = err.response;
                 }
               } else if (err.message) {
@@ -417,22 +452,30 @@
         while (table.rows.length > 1) {
           table.deleteRow(1);
         }
-        for (var i = 0; i < orderProperties.length; i++) {
-          var row = table.insertRow(i + 1);
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
+        for (let i = 0; i < orderProperties.length; i++) {
+          let row = table.insertRow(i + 1);
+          let cell1 = row.insertCell(0);
+          let cell2 = row.insertCell(1);
 
           cell1.innerHTML = orderProperties[i].key;
-          var cancel_t = document.createElement("fw-checkbox");
+          let cancel_t = document.createElement("fw-checkbox");
+          cancel_t.setAttribute("data-key", orderProperties[i].key);
           if (orderProperties[i].checked) {
             cancel_t.setAttribute("checked", "true");
+            cancel_t.checked = true;
           }
-          let currentKey = orderProperties[i].key;
           cancel_t.addEventListener("fwChange", (e) => {
-            propertiesFun(cancel_t, currentKey, "order", e.detail.checked);
+            propertiesFun(
+              e.target,
+              e.target.getAttribute("data-key"),
+              "order",
+              e.detail.checked,
+            );
+            updateCheckboxLimits("prop-table");
           });
           cell2.appendChild(cancel_t);
         }
+        updateCheckboxLimits("prop-table");
       }
 
       function refreshItemPropertiesTable() {
@@ -441,93 +484,40 @@
         while (table.rows.length > 1) {
           table.deleteRow(1);
         }
-        for (var i = 0; i < itemProperties.length; i++) {
-          var row = table.insertRow(i + 1);
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
+        for (let i = 0; i < itemProperties.length; i++) {
+          let row = table.insertRow(i + 1);
+          let cell1 = row.insertCell(0);
+          let cell2 = row.insertCell(1);
 
           cell1.innerHTML = itemProperties[i].key;
-          var cancel_t = document.createElement("fw-checkbox");
+          let cancel_t = document.createElement("fw-checkbox");
+          cancel_t.setAttribute("data-key", itemProperties[i].key);
           if (itemProperties[i].checked) {
             cancel_t.setAttribute("checked", "true");
+            cancel_t.checked = true;
           }
-          let currentKey = itemProperties[i].key;
           cancel_t.addEventListener("fwChange", (e) => {
-            propertiesFun(cancel_t, currentKey, "item", e.detail.checked);
+            propertiesFun(
+              e.target,
+              e.target.getAttribute("data-key"),
+              "item",
+              e.detail.checked,
+            );
+            updateCheckboxLimits("line-prop-table");
           });
           cell2.appendChild(cancel_t);
         }
+        updateCheckboxLimits("line-prop-table");
       }
 
-      // function propertiesFun(event_, key, type, isChecked) {
-      //   let obj = { key: key, name: placeHolder(key) };
-      //   if (type === "order") {
-      //     let o_ind = properties.order_p.findIndex((e) => e.key === key);
-      //     if (isChecked && o_ind === -1) {
-      //       if (properties.order_p.length < 4) {
-      //         properties.order_p.push(obj);
-      //       } else {
-      //         setTimeout(() => {
-      //           event_.removeAttribute("checked");
-      //         }, 100);
-      //       }
-      //     } else if (!isChecked && o_ind !== -1) {
-      //       properties.order_p.splice(o_ind, 1);
-      //     }
-      //   } else {
-      //     let i_ind = properties.item_p.findIndex((e) => e.key === key);
-      //     if (isChecked && i_ind === -1) {
-      //       if (properties.item_p.length < 4) {
-      //         properties.item_p.push(obj);
-      //       } else {
-      //         setTimeout(() => {
-      //           event_.removeAttribute("checked");
-      //         }, 100);
-      //       }
-      //     } else if (!isChecked && i_ind !== -1) {
-      //       properties.item_p.splice(i_ind, 1);
-      //     }
-      //   }
-      // }
+      function propertiesFun(event_, key, type, isChecked) {
+        let list = type === "order" ? properties.order_p : properties.item_p;
+        let ind = list.findIndex((e) => e.key === key);
 
-function propertiesFun(event_, key, type, isChecked) {
-        let errorMsgEl = document.getElementById("prop-error-msg");
-        if (errorMsgEl) errorMsgEl.innerText = ""; // Clear previous error
-
-        let obj = { key: key, name: placeHolder(key) };
-        
-        if (type === "order") {
-          let o_ind = properties.order_p.findIndex((e) => e.key === key);
-          if (isChecked && o_ind === -1) {
-            if (properties.order_p.length < 4) {
-              properties.order_p.push(obj);
-            } else {
-              // Prevent checking the 5th checkbox
-              event_.checked = false;
-              event_.removeAttribute("checked");
-              if (errorMsgEl) {
-                errorMsgEl.innerText = "Maximum of 4 Order Properties can be selected.";
-              }
-            }
-          } else if (!isChecked && o_ind !== -1) {
-            properties.order_p.splice(o_ind, 1);
-          }
-        } else {
-          let i_ind = properties.item_p.findIndex((e) => e.key === key);
-          if (isChecked && i_ind === -1) {
-            if (properties.item_p.length < 4) {
-              properties.item_p.push(obj);
-            } else {
-              // Prevent checking the 5th checkbox
-              event_.checked = false;
-              event_.removeAttribute("checked");
-              if (errorMsgEl) {
-                errorMsgEl.innerText = "Maximum of 4 Item Properties can be selected.";
-              }
-            }
-          } else if (!isChecked && i_ind !== -1) {
-            properties.item_p.splice(i_ind, 1);
-          }
+        if (isChecked && ind === -1 && list.length < 4) {
+          list.push({ key: key, name: placeHolder(key) });
+        } else if (!isChecked && ind !== -1) {
+          list.splice(ind, 1);
         }
       }
 

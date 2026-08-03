@@ -238,7 +238,7 @@ function loadAppConfig() {
 
       let item_p = Array.isArray(prop.properties.item_p)
         ? prop.properties.item_p.filter(
-            (e) => !orderAttr.includes("OrderLine." + e.key)
+            (e) => !orderAttr.includes("OrderLine." + e.key),
           )
         : [];
       if (item_p.length != 0) {
@@ -530,8 +530,11 @@ function bindOrderInDropdown(order) {
 
 //************************card details function showing**************************
 function getlineItemsInCard(resp) {
-  console.log("orderItems:", JSON.stringify(resp.entries[0].orderItems, null, 2));
-console.log("relations:", JSON.stringify(resp.entries[0].relations, null, 2));
+  console.log(
+    "orderItems:",
+    JSON.stringify(resp.entries[0].orderItems, null, 2),
+  );
+  console.log("relations:", JSON.stringify(resp.entries[0].relations, null, 2));
   console.log("order items:", resp.entries[0].orderItems);
   let item_card = document.getElementById("item_card_id");
 
@@ -626,10 +629,21 @@ function bindOrderAttr(data1) {
     } else {
       div2.innerHTML = order_prop[i]["name"] + ": ";
     }
+    // parentdiv.appendChild(div2);
+    // map_prop_h = mapProp[order_prop[i]["key"]];
+    // let itemattr = bindItemAttrValue(data1, map_prop_h, order_prop, i);
+    // parentdiv.appendChild(itemattr);
+
+    // attr_element.appendChild(parentdiv);
     parentdiv.appendChild(div2);
-    map_prop_h = mapProp[order_prop[i]["key"]];
-    let itemattr = bindItemAttrValue(data1, map_prop_h, order_prop, i);
-    parentdiv.appendChild(itemattr);
+
+    try {
+      map_prop_h = mapProp[order_prop[i]["key"]];
+      let itemattr = bindItemAttrValue(data1, map_prop_h, order_prop, i);
+      parentdiv.appendChild(itemattr);
+    } catch (e) {
+      console.error("Could not render order property:", order_prop[i], e);
+    }
 
     attr_element.appendChild(parentdiv);
   }
@@ -637,18 +651,67 @@ function bindOrderAttr(data1) {
 
 const inValidValue = [undefined, null, ""];
 
+// function bindItemAttrValue(data1, map_prop_h, order_prop, i) {
+//   let data2 = data1.entries[0];
+//   let shipp = data2["dates"].find((a) => {
+//     return a.typeId === 8;
+//   });
+//   let div3 = document.createElement("div"),
+//     parentdiv = document.createElement("div");
+
+//   if (map_prop_h && Array.isArray(map_prop_h)) {
+//     for (let j = 0; j < map_prop_h.length; j++) {
+//       div3 = document.createElement("div");
+//       if (data2["addresses"][0][map_prop_h[j]]) {
+//         div3.innerText = data2["addresses"][0][map_prop_h[j]];
+//       } else {
+//         div3.innerHTML = "Nil";
+//       }
+//       parentdiv.appendChild(div3);
+//     }
+//   } else {
+//     if (!inValidValue.includes(data2[order_prop[i]["key"]])) {
+//       div3.innerHTML = data2[order_prop[i]["key"]];
+//     } else if (order_prop[i]["key"] == "plentyID") {
+//       div3.innerHTML = data2["plentyId"];
+//     } else if (order_prop[i]["key"] == "ownerID") {
+//       div3.innerHTML = data2["ownerId"];
+//     } else if (data2["amounts"][0][order_prop[i]["key"]]) {
+//       div3.innerHTML = data2["amounts"][0][order_prop[i]["key"]];
+//     } else if (data2["warehouseSender"][order_prop[i]["key"]]) {
+//       div3.innerHTML = data2["warehouseSender"][order_prop[i]["key"]];
+//     } else if (order_prop[i]["key"] == "orderDate&Time") {
+//       div3.innerHTML = data2["createdAt"];
+//     } else if (order_prop[i]["key"] == "shippingDate&time" && shipp) {
+//       div3.innerHTML = shipp["date"];
+//     } else {
+//       div3.innerHTML = "Nil";
+//     }
+
+//     parentdiv.appendChild(div3);
+//   }
+
+//   return parentdiv;
+// }
+
 function bindItemAttrValue(data1, map_prop_h, order_prop, i) {
   let data2 = data1.entries[0];
-  let shipp = data2["dates"].find((a) => {
-    return a.typeId === 8;
-  });
+  let shipp = Array.isArray(data2["dates"])
+    ? data2["dates"].find((a) => {
+        return a.typeId === 8;
+      })
+    : undefined;
   let div3 = document.createElement("div"),
     parentdiv = document.createElement("div");
 
   if (map_prop_h && Array.isArray(map_prop_h)) {
     for (let j = 0; j < map_prop_h.length; j++) {
       div3 = document.createElement("div");
-      if (data2["addresses"][0][map_prop_h[j]]) {
+      if (
+        data2["addresses"] &&
+        data2["addresses"][0] &&
+        data2["addresses"][0][map_prop_h[j]]
+      ) {
         div3.innerText = data2["addresses"][0][map_prop_h[j]];
       } else {
         div3.innerHTML = "Nil";
@@ -662,9 +725,16 @@ function bindItemAttrValue(data1, map_prop_h, order_prop, i) {
       div3.innerHTML = data2["plentyId"];
     } else if (order_prop[i]["key"] == "ownerID") {
       div3.innerHTML = data2["ownerId"];
-    } else if (data2["amounts"][0][order_prop[i]["key"]]) {
+    } else if (
+      data2["amounts"] &&
+      data2["amounts"][0] &&
+      data2["amounts"][0][order_prop[i]["key"]]
+    ) {
       div3.innerHTML = data2["amounts"][0][order_prop[i]["key"]];
-    } else if (data2["warehouseSender"][order_prop[i]["key"]]) {
+    } else if (
+      data2["warehouseSender"] &&
+      data2["warehouseSender"][order_prop[i]["key"]]
+    ) {
       div3.innerHTML = data2["warehouseSender"][order_prop[i]["key"]];
     } else if (order_prop[i]["key"] == "orderDate&Time") {
       div3.innerHTML = data2["createdAt"];
@@ -1245,12 +1315,20 @@ function itemCardAttr(obj) {
 // }
 
 function displayshippingAddress(resp) {
+
+
   const order = resp.entries[0];
   const addressRelations = order.addressRelations || [];
+
+  console.log("DEBUG addressRelations:", JSON.stringify(order.addressRelations));
+  console.log("DEBUG addresses:", JSON.stringify(order.addresses));
+console.log("DEBUG relations:", JSON.stringify(order.relations));
   const shipRelation = addressRelations.find((r) => r.typeId === 2);
-  const contactRelation = (order.relations || []).find(
-    (r) => r.referenceType === "contact",
-  );
+//  const contactRelation = (order.relations || []).find(
+//     (r) => r.referenceType === "contact",
+//   );
+
+
 
   client.instance.resize({ height: "400px" });
 
@@ -1259,24 +1337,51 @@ function displayshippingAddress(resp) {
     stock_orders_id.removeChild(stock_orders_id.childNodes[0]);
   }
 
-  if (!shipRelation || !contactRelation) {
+  if (!shipRelation) {
     stock_orders_id.innerHTML =
       "<p>No shipping address found for this order.</p>";
     return;
   }
 
-  invokeWithAuth("getContactAddress", {
-    contactID: contactRelation.referenceId,
-    addressID: shipRelation.addressId,
+  // invokeWithAuth("getContactAddress", {
+  //   contactID: contactRelation.referenceId,
+  //   addressID: shipRelation.addressId,
+  // })
+  //   .then(function (data) {
+  //     const shipAddr = JSON.parse(data.response);
+  //     renderShippingAddress(shipAddr, order);
+  //   })
+  //   .catch(function (err) {
+  //     console.error("Could not load shipping address:", err);
+  //     stock_orders_id.innerHTML = "<p>Could not load shipping address.</p>";
+  //   });
+
+// const shipAddr = (order.addresses || []).find(
+//   (a) => a.id === shipRelation.addressId,
+// );
+
+// if (!shipAddr) {
+//   stock_orders_id.innerHTML = "<p>Could not load shipping address.</p>";
+//   return;
+// }
+
+// renderShippingAddress(shipAddr, order);
+
+
+invokeWithAuth("getOrderAddress", {
+  addressId: shipRelation.addressId,
+})
+  .then(function (data) {
+    const shipAddr = JSON.parse(data.response);
+    renderShippingAddress(shipAddr, order);
   })
-    .then(function (data) {
-      const shipAddr = JSON.parse(data.response);
-      renderShippingAddress(shipAddr, order);
-    })
-    .catch(function (err) {
-      console.error("Could not load shipping address:", err);
-      stock_orders_id.innerHTML = "<p>Could not load shipping address.</p>";
-    });
+ .catch(function (err) {
+  console.error("Could not load shipping address - FULL ERROR:", JSON.stringify(err));
+  console.error("typeof err:", typeof err, "err.status:", err && err.status, "err.response:", err && err.response);
+  stock_orders_id.innerHTML = "<p>Could not load shipping address.</p>";
+});
+
+
 }
 
 function renderShippingAddress(shipAddr, order) {
