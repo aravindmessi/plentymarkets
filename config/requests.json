@@ -78,29 +78,29 @@
     "options": {}
   },
   "getContactAddress": {
-  "schema": {
-    "method": "GET",
-    "protocol": "https",
-    "host": "<%= iparam.SWdomain %>",
-    "path": "/rest/accounts/contacts/<%= context.contactID %>/addresses/<%= context.addressID %>",
-    "headers": {
-      "Authorization": "<%= context.token %>",
-      "Content-Type": "application/json"
-    }
+    "schema": {
+      "method": "GET",
+      "protocol": "https",
+      "host": "<%= iparam.SWdomain %>",
+      "path": "/rest/accounts/contacts/<%= context.contactID %>/addresses/<%= context.addressID %>",
+      "headers": {
+        "Authorization": "<%= context.token %>",
+        "Content-Type": "application/json"
+      }
+    },
+    "options": {}
   },
-  "options": {}
-},
-"getOrderAddress": {
-  "schema": {
-    "method": "GET",
-    "protocol": "https",
-    "host": "<%= iparam.SWdomain %>",
-    "path": "/rest/addresses/<%= context.addressId %>",
-    "headers": {
-      "Authorization": "<%= context.token %>",
-      "Content-Type": "application/json"
-    }
-  },
-  "options": {}
-}
+  "getOrderAddress": {
+    "schema": {
+      "method": "GET",
+      "protocol": "https",
+      "host": "<%= iparam.SWdomain %>",
+      "path": "/rest/orders/<%= context.orderId %>/addresses/<%= context.addressId %>",
+      "headers": {
+        "Authorization": "<%= context.token %>",
+        "Content-Type": "application/json"
+      }
+    },
+    "options": {}
+  }
 }
